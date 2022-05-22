@@ -8,12 +8,32 @@
 import Foundation
 
 final class Game {
-    static let game = Game()
-    private init() {}
+
+    private let caretaker = GameCaretaker()
+    static let shared = Game()
+    private init() {
+        sessionsArray = caretaker.loadResults() ?? []
+    }
     
     var gameSession: GameSession?
+    var sessionsArray: [GameSession] {
+        didSet {
+            caretaker.saveResults(results: sessionsArray)
+        }
+    }
+    
     var questionsArray = [question_1, question_2, question_3, question_4, question_5, question_6, question_7, question_8, question_9, question_10]
     
+    weak var gameSessionDelegate: GameSessionDelegate?
+}
+
+extension Game: GameSessionDelegate {
+    func answer(isRightAnswer: Bool) {
+        if isRightAnswer {
+            self.gameSession?.rightAnswers += 1
+            self.gameSession?.currentQuestion += 1
+        }
+    }
 }
 
 private let question_1 = Question(question: "Чему равно число Пи?",
