@@ -20,10 +20,10 @@ class GameViewController: UIViewController {
     weak var gameSessionDelegate: GameSessionDelegate?
     var currentGameSession = GameSession()
     var currentShuffledAnswers: [String] = []
+//    var questionsArray: [Question] = Game.shared.questionsArray
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         Game.shared.gameSession = currentGameSession
         currentGameSession.currentQuestion = 0
         self.gameSessionDelegate = Game.shared
@@ -56,6 +56,8 @@ class GameViewController: UIViewController {
     }
     
     func didTapAnswer(answer: Int, answers: [String]) {
+        
+
         if let currentQuestion = Game.shared.gameSession?.currentQuestion {
             if currentQuestion < Game.shared.questionsArray.count - 1 {
                 let rightAnswer = Game.shared.questionsArray[currentGameSession.currentQuestion].rightAnswer.description
@@ -64,11 +66,11 @@ class GameViewController: UIViewController {
                     gameSessionDelegate?.answer(isRightAnswer: true)
                     self.currentShuffledAnswers = Game.shared.questionsArray[currentGameSession.currentQuestion].answers.shuffled()
                     displayQuestion()
+                    
                 } else {
                     Game.shared.sessionsArray.append(currentGameSession) // Добавляем результаты текущей игры в массив
                     Game.shared.gameSession = nil // Обнуляем сессию по завершению игры
                     dismiss(animated: true, completion: nil)
-                    print(Game.shared.sessionsArray.count)
                 }
             } else {
                 Game.shared.sessionsArray.append(currentGameSession) // Добавляем результаты текущей игры в массив
@@ -85,6 +87,5 @@ protocol GameSessionDelegate: AnyObject {
 }
 
 extension GameViewController: GameSessionDelegate {
-    func answer(isRightAnswer: Bool) {
-    }
+    func answer(isRightAnswer: Bool) {}
 }
